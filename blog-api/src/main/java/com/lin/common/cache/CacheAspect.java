@@ -26,6 +26,7 @@ public class CacheAspect {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
 
+    //切入点
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
