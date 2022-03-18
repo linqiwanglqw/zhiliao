@@ -26,10 +26,10 @@ public class CacheAspect {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
 
-    //切入点
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+    //切入点
     @Pointcut("@annotation(com.lin.common.cache.Cache)")
     public void pt(){}
 
