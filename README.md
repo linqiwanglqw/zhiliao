@@ -23,7 +23,7 @@
 ## 技术应用
 
  ### 前端
-   Vue， markdown-Editor
+   Vue、element-UI 、markdown-Editor
  ### 后端
  SpringBoot、MybatisPlus、MySQL、Redis、RocketMQ、Lombok、maven、七牛云sdk
  
