@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/blog-admin/blog-admin.iml" filepath="$PROJECT_DIR$/blog-admin/blog-admin.iml" />
-      <module fileurl="file://$PROJECT_DIR$/blog-api/blog-api.iml" filepath="$PROJECT_DIR$/blog-api/blog-api.iml" />
-      <module fileurl="file://$PROJECT_DIR$/blog-parent.iml" filepath="$PROJECT_DIR$/blog-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zhiliao-admin/zhiliao-admin.iml" filepath="$PROJECT_DIR$/zhiliao-admin/zhiliao-admin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zhiliao-api/zhiliao-api.iml" filepath="$PROJECT_DIR$/zhiliao-api/zhiliao-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zhiliao-parent.iml" filepath="$PROJECT_DIR$/zhiliao-parent.iml" />
     </modules>
   </component>
 </project>

@@ -20,10 +20,7 @@
     <select id="listArchives" resultType="com.lin.dao.dos.Archives">
         select FROM_UNIXTIME(create_date/1000,'%Y') as year,FROM_UNIXTIME(create_date/1000,'%m') as month,count(*) as count from b_article group by year,month
     </select>
-    <!--            Long categoryId,
-                               Long tagId,
-                               String year,
-                               String month-->
+
     <select id="listArticle" resultMap="articleMap">
         select * from b_article
         <where>

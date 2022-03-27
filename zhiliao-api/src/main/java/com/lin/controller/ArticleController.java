@@ -97,7 +97,7 @@ public class ArticleController {
     }
 
     /**
-     * 编辑按钮
+     * 查看文章
      * @param articleId
      * @return
      */
