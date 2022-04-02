@@ -44,6 +44,7 @@ public class CacheAspect {
 
 
             Class[] parameterTypes = new Class[pjp.getArgs().length];
+
             Object[] args = pjp.getArgs();
             //参数
             String params = "";

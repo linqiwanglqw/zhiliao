@@ -170,10 +170,10 @@ public class ArticleServiceImpl implements ArticleService {
             article.setCommentCounts(0);
             article.setCreateDate(System.currentTimeMillis());
             article.setCategoryId(Long.parseLong(articleParam.getCategory().getId()));
+            article.setLikeUserCount(0L);
             //插入之后 会生成一个文章id
             this.articleMapper.insert(article);
         }
-
 
         //tag
         List<TagVo> tags = articleParam.getTags();
@@ -199,12 +199,12 @@ public class ArticleServiceImpl implements ArticleService {
         Map<String,String> map = new HashMap<>();
         map.put("id",article.getId().toString());
 
-        if(isEdit){
+//        if(isEdit){
             //当前文章更新了
             ArticleMessage articleMessage = new ArticleMessage();
             articleMessage.setArticleId(article.getId());
             rocketMQTemplate.convertAndSend("blog-update-article",articleMessage);
-        }
+//        }
         return Result.success(map);
     }
 

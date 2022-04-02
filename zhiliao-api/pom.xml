@@ -124,5 +124,12 @@
         <artifactId>rocketmq-client</artifactId>
         <version>3.4.9</version>
     </dependency>
+
+    <!--  scheduled定时任务  -->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context-support</artifactId>
+    </dependency>
+
 </dependencies>
 </project>

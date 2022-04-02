@@ -4,6 +4,8 @@ import lombok.Data;
 
 @Data
 public class LikeParam {
-    private Long articleId;
-    private Long account;
+    //文章id
+    private String articleId;
+    //用户id
+    private String userId;
 }

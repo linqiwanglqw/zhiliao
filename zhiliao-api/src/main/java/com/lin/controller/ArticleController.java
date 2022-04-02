@@ -31,7 +31,7 @@ public class ArticleController {
     }
 
     /**
-     * 首页 文章列表
+     * 首页 搜索文章列表
      * @param pageSearchParams
      * @return
      */

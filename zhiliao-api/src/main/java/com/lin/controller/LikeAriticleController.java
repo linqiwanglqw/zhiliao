@@ -4,13 +4,10 @@ import com.lin.service.LikeService;
 import com.lin.vo.Result;
 import com.lin.vo.params.LikeParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("like")
+@RequestMapping("/like")
 public class LikeAriticleController {
 
     @Autowired
@@ -21,7 +18,7 @@ public class LikeAriticleController {
      * @param likeParam
      * @return
      */
-    @PostMapping("num")
+    @PostMapping("/num")
     public Result like(@RequestBody LikeParam likeParam){
         Long num= likeService.findLikeNum(likeParam);
         return Result.success(num);
@@ -32,7 +29,7 @@ public class LikeAriticleController {
      * @param likeParam
      * @return
      */
-    @PostMapping("islike")
+    @PostMapping("/islike")
     public Result islike(@RequestBody LikeParam likeParam){
         boolean flag = likeService.findLike(likeParam);
         return Result.success(flag);
@@ -43,7 +40,7 @@ public class LikeAriticleController {
      * @param
      * @return
      */
-    @PostMapping("initlike")
+    @PostMapping("/initlike")
     public Result initlike(@RequestBody LikeParam likeParam){
         boolean flag = likeService.selectLike(likeParam);
         return Result.success(flag);

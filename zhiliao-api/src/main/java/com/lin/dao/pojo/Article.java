@@ -42,4 +42,9 @@ public class Article {
      * 创建时间
      */
     private Long createDate;
+
+    /**
+     * 点赞数
+     */
+    private Long likeUserCount;
 }
