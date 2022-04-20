@@ -21,4 +21,11 @@ public interface ArticleMapper extends BaseMapper<Article> {
                                String month,
                                String keyWord);
 
+    /**
+     * 修改文章是否可用
+     * @param articleId
+     * @return
+     */
+    boolean  updateAvailableById(Long articleId);
+
 }

@@ -47,4 +47,9 @@ public class Article {
      * 点赞数
      */
     private Long likeUserCount;
+
+    /**
+     * 是否可用
+     */
+    private Long available;
 }

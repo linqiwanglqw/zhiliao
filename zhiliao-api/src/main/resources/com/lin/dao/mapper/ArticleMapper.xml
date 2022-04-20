@@ -16,6 +16,14 @@
         <result column="body_id" property="bodyId"/>
         <result column="category_id" property="categoryId"/>
     </resultMap>
+    <update id="updateAvailableById">
+        update b_article set available=0
+        <where>
+            <if test="articleId != null">
+                id=#{articleId}
+            </if>
+        </where>
+    </update>
 
     <select id="listArchives" resultType="com.lin.dao.dos.Archives">
         select FROM_UNIXTIME(create_date/1000,'%Y') as year,FROM_UNIXTIME(create_date/1000,'%m') as month,count(*) as count from b_article group by year,month
@@ -25,6 +33,7 @@
         select * from b_article
         <where>
             1 = 1
+            and available=1
             <if test="categoryId != null">
                 and category_id=#{categoryId}
             </if>

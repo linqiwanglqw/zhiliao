@@ -51,9 +51,7 @@ public class ArticleServiceImpl implements ArticleService {
      */
     @Override
     public Result listArticle(PageParams pageParams) {
-        System.out.println(pageParams);
         Page<Article> page = new Page<>(pageParams.getPage(),pageParams.getPageSize());
-
         IPage<Article> articleIPage = articleMapper.listArticle(
                 page,
                 pageParams.getCategoryId(),
@@ -62,24 +60,33 @@ public class ArticleServiceImpl implements ArticleService {
                 pageParams.getMonth(),
                 null);
         List<Article> records = articleIPage.getRecords();
-        System.out.println(records);
         return Result.success(copyList(records,true,true));
     }
 
     @Override
     public Result listSearchArticle(PageSearchParams pageSearchParams) {
-        Page<Article> page = new Page<>(pageSearchParams.getPage(),pageSearchParams.getPageSize());
-
-        IPage<Article> articleIPage = articleMapper.listArticle(
-                page,
-                pageSearchParams.getCategoryId(),
-                pageSearchParams.getTagId(),
-                pageSearchParams.getYear(),
-                pageSearchParams.getMonth(),
-                pageSearchParams.getKeyWord()
-        );
-        List<Article> records = articleIPage.getRecords();
-        return Result.success(copyList(records,true,true));
+        if("".equals(pageSearchParams.getKeyWord())){
+            PageParams pageParams = new PageParams();
+            pageParams.setPage(pageSearchParams.getPage());
+            pageParams.setPageSize(pageSearchParams.getPageSize());
+            pageParams.setCategoryId(pageSearchParams.getCategoryId());
+            pageParams.setTagId(pageSearchParams.getTagId());
+            pageParams.setYear(pageSearchParams.getYear());
+            pageParams.setMonth(pageParams.getMonth());
+            return listArticle(pageParams);
+        }else {
+            Page<Article> page = new Page<>(pageSearchParams.getPage(),pageSearchParams.getPageSize());
+            IPage<Article> articleIPage = articleMapper.listArticle(
+                    page,
+                    pageSearchParams.getCategoryId(),
+                    pageSearchParams.getTagId(),
+                    pageSearchParams.getYear(),
+                    pageSearchParams.getMonth(),
+                    pageSearchParams.getKeyWord()
+            );
+            List<Article> records = articleIPage.getRecords();
+            return Result.success(copyList(records,true,true));
+        }
     }
 
 
@@ -208,6 +215,18 @@ public class ArticleServiceImpl implements ArticleService {
         return Result.success(map);
     }
 
+    @Override
+    public Result delAticleById(Long articleId) {
+        boolean b = articleMapper.updateAvailableById(articleId);
+        if(b){
+            ArticleMessage articleMessage = new ArticleMessage();
+            articleMessage.setArticleId(articleId);
+            rocketMQTemplate.convertAndSend("blog-update-article",articleMessage);
+            return Result.success("删除成功");
+        }else {
+            return Result.fail(30004,"文章删除或文章不存在");
+        }
+    }
 
     /**
      * 将需要的内容封装到vo中，然后放入list中

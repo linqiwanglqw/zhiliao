@@ -105,4 +105,11 @@ public class ArticleController {
     public Result articleById(@PathVariable("id") Long articleId){
         return articleService.findArticleById(articleId);
     }
+
+    @DeleteMapping("delArticle/{id}")
+    @CrossOrigin
+    public Result delArticleById(@PathVariable("id") Long articleId ){
+        System.out.println(articleId);
+        return Result.success(articleService.delAticleById(articleId));
+    }
 }
