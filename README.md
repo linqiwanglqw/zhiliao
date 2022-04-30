@@ -18,7 +18,7 @@
  * zhiiao-parent
  * * zhiliao-api 提供web端API接口服务；
  * * zhiliao-admin 提供管理端API接口服务；
- * zhiiao-app 前端使用vue，借鉴修改源于vueblog！
+ * zhiiao-app 前端使用vue+elementUI
 
 ## 技术应用
 
@@ -27,7 +27,6 @@
  ### 后端
  SpringBoot、MybatisPlus、MySQL、Redis、RocketMQ、Lombok、maven、七牛云sdk
  
-  邮箱注册功能该版本暂时删除、如有需要我会给各位提供demo。
  ### 项目发布采用技术
    docker，nginx，jdk8
    
