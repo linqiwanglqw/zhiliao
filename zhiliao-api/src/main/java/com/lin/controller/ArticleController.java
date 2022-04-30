@@ -7,34 +7,30 @@ import com.lin.service.ArticleService;
 import com.lin.vo.params.ArticleParam;
 import com.lin.vo.params.PageParams;
 import com.lin.vo.params.PageSearchParams;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 //json数据进行交互
 @RestController
 @RequestMapping("articles")
+@Api(tags = "文章数据业务")
 public class ArticleController {
 
     @Autowired
     private ArticleService articleService;
-    /**
-     * 首页 文章列表
-     * @param pageParams
-     * @return
-     */
+
+
     @PostMapping
     //加上此注解 代表要对此接口记录日志
-    @LogAnnotation(module="文章",operator="获取文章列表")
+    @LogAnnotation(module="文章",operator="获取文章列表接口")
     @Cache(expire = 5 * 60 * 1000,name = "listArticle")
+    @ApiOperation("查询文章列表接口")
     public Result listArticle(@RequestBody PageParams pageParams){
         return articleService.listArticle(pageParams);
     }
 
-    /**
-     * 首页 搜索文章列表
-     * @param pageSearchParams
-     * @return
-     */
+    @ApiOperation("查询文章搜索列表接口")
     @PostMapping("/search")
     //加上此注解 代表要对此接口记录日志
     @LogAnnotation(module="文章",operator="搜索文章列表")
@@ -43,33 +39,24 @@ public class ArticleController {
         return articleService.listSearchArticle(pageSearchParams);
     }
 
-    /**
-     * 首页 最热文章
-     * @return
-     */
     @PostMapping("hot")
     @Cache(expire = 5 * 60 * 1000,name = "hot_article")
+    @ApiOperation("查询首页 最热文章接口")
     public Result hotArticle(){
         int limit = 5;
         return articleService.hotArticle(limit);
     }
 
-    /**
-     * 首页 最新文章
-     * @return
-     */
     @PostMapping("new")
+    @ApiOperation("查询首页 最新文章接口")
     @Cache(expire = 5 * 60 * 1000,name = "news_article")
     public Result newArticles(){
         int limit = 5;
         return articleService.newArticles(limit);
     }
 
-    /**
-     * 首页 文章归档
-     * @return
-     */
     @PostMapping("listArchives")
+    @ApiOperation("查询首页 文章归档接口")
     public Result listArchives(){
         return articleService.listArchives();
     }
@@ -77,39 +64,35 @@ public class ArticleController {
 
     @PostMapping("view/{id}")
     @Cache(expire = 5 * 60 * 1000,name = "view_article")
+    @ApiOperation("查询文章详情接口")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="id",value = "文章id",required = true,paramType = "path",dataType = "Long")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 404,message = "请求路径没有或页面跳转路径不对"),
+            @ApiResponse(code = 520,message = "系统维护中")
+    })
     public Result findArticleById(@PathVariable("id") Long articleId){
-        System.out.println(articleService.findArticleById(articleId));
         return articleService.findArticleById(articleId);
     }
-    //接口url：/articles/publish
-    //
-    //请求方式：POST
 
-    /**
-     * 写文章
-     * @param articleParam
-     * @return
-     */
+
     @PostMapping("publish")
+    @ApiOperation("新增文章接口")
     public Result publish(@RequestBody ArticleParam articleParam){
-
         return articleService.publish(articleParam);
     }
 
-    /**
-     * 查看文章
-     * @param articleId
-     * @return
-     */
     @PostMapping("{id}")
+    @ApiOperation("查看文章编辑数据接口")
     public Result articleById(@PathVariable("id") Long articleId){
         return articleService.findArticleById(articleId);
     }
 
     @DeleteMapping("delArticle/{id}")
     @CrossOrigin
+    @ApiOperation("删除文章编辑数据接口")
     public Result delArticleById(@PathVariable("id") Long articleId ){
-        System.out.println(articleId);
         return Result.success(articleService.delAticleById(articleId));
     }
 }

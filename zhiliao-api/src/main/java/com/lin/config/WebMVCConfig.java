@@ -25,6 +25,7 @@ public class WebMVCConfig implements WebMvcConfigurer {
                 .addPathPatterns("/test")
                 .addPathPatterns("/comments/create/change")
                 .addPathPatterns("/articles/publish")
-                .addPathPatterns("/like/islike");//点赞接口
+                .addPathPatterns("/like/islike")
+                .addPathPatterns("addInterceptors/**");//点赞接口
     }
 }
