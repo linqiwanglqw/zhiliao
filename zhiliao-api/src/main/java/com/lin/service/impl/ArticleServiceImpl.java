@@ -210,7 +210,7 @@ public class ArticleServiceImpl implements ArticleService {
             //当前文章更新了
             ArticleMessage articleMessage = new ArticleMessage();
             articleMessage.setArticleId(article.getId());
-            rocketMQTemplate.convertAndSend("blog-update-article",articleMessage);
+            rocketMQTemplate.convertAndSend("api-update-article",articleMessage);
 //        }
         return Result.success(map);
     }
@@ -226,6 +226,16 @@ public class ArticleServiceImpl implements ArticleService {
         }else {
             return Result.fail(30004,"文章删除或文章不存在");
         }
+    }
+
+    @Override
+    public Result searchArticle(String search) {
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByDesc(Article::getViewCounts);
+        queryWrapper.select(Article::getId,Article::getTitle);
+        queryWrapper.like(Article::getTitle,search);
+        List<Article> articles = articleMapper.selectList(queryWrapper);
+        return Result.success(copyList(articles,false,false));
     }
 
     /**

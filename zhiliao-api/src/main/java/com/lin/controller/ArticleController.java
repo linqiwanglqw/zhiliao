@@ -35,8 +35,17 @@ public class ArticleController {
     //加上此注解 代表要对此接口记录日志
     @LogAnnotation(module="文章",operator="搜索文章列表")
     public Result listSearchArticle(@RequestBody PageSearchParams pageSearchParams){
-        System.out.println(articleService.listSearchArticle(pageSearchParams));
         return articleService.listSearchArticle(pageSearchParams);
+    }
+
+    //表头的查询
+    @ApiOperation("查询文章搜索列表接口")
+    @PostMapping("/headerSearch")
+    //加上此注解 代表要对此接口记录日志
+    @LogAnnotation(module="文章",operator="搜索文章列表")
+    public Result HeaderSearchArticle(@RequestBody ArticleParam articleParam){
+        String search = articleParam.getSearch();
+        return articleService.searchArticle(search);
     }
 
     @PostMapping("hot")

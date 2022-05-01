@@ -20,4 +20,6 @@ public class ArticleParam {
     private List<TagVo> tags;
 
     private String title;
+
+    private String search;
 }

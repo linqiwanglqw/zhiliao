@@ -1,6 +1,11 @@
 package com.lin.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.lin.dao.mapper.ArticleMapper;
+import com.lin.dao.pojo.Article;
 import com.lin.dao.pojo.Comment;
 import com.lin.dao.pojo.SysUser;
 import com.lin.service.CommentsService;
@@ -22,6 +27,8 @@ import java.util.List;
 public class CommentsServiceImpl implements CommentsService {
     @Autowired
     private CommentMapper commentMapper;
+    @Autowired
+    private ArticleMapper articleMapper;
     @Autowired
     private SysUserService sysUserService;
 
@@ -60,7 +67,12 @@ public class CommentsServiceImpl implements CommentsService {
         Long toUserId = commentParam.getToUserId();
         comment.setToUid(toUserId == null ? 0 : toUserId);
         this.commentMapper.insert(comment);
-        return Result.success(null);
+        UpdateWrapper<Article> updateWrapper = Wrappers.update();
+        updateWrapper.eq("id",comment.getArticleId());
+        updateWrapper.setSql(true,"comment_counts=comment_counts+1");
+        this.articleMapper.update(null,updateWrapper);
+        CommentVo copy = copy(comment);
+        return Result.success(copy);
     }
 
     private List<CommentVo> copyList(List<Comment> comments) {

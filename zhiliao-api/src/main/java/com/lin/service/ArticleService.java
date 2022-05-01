@@ -55,4 +55,6 @@ public interface ArticleService {
     Result publish(ArticleParam articleParam);
 
     Result delAticleById(Long articleId);
+
+    Result searchArticle(String search);
 }
