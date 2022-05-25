@@ -1,6 +1,7 @@
 package com.lin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lin.dao.mapper.SysUserMapper;
 import com.lin.dao.pojo.SysUser;
 import com.lin.service.LoginService;
@@ -54,7 +55,13 @@ public class SysUserServiceImpl implements SysUserService {
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysUser::getAccount,account);
         queryWrapper.eq(SysUser::getPassword,password);
-        queryWrapper.select(SysUser::getAccount,SysUser::getId,SysUser::getAvatar,SysUser::getNickname);
+        queryWrapper.select(SysUser::getAccount,
+                SysUser::getId,
+                SysUser::getAvatar,
+                SysUser::getNickname,
+                SysUser::getDeleted,
+                SysUser::getCreateDate,
+                SysUser::getStatus);
         //limit 1可以避免全表查，遇到符合条件就终止
         queryWrapper.last("limit 1");
         return sysUserMapper.selectOne(queryWrapper);
@@ -83,6 +90,7 @@ public class SysUserServiceImpl implements SysUserService {
         loginUserVo.setNickname(sysUser.getNickname());
         loginUserVo.setAvatar(sysUser.getAvatar());
         loginUserVo.setAccount(sysUser.getAccount());
+        loginUserVo.setStatus(sysUser.getStatus());
         return Result.success(loginUserVo);
     }
 
@@ -108,6 +116,18 @@ public class SysUserServiceImpl implements SysUserService {
         //保存用户这 id会自动生成
         //这个地方 默认生成的id是 分布式id 雪花算法
         this.sysUserMapper.insert(sysUser);
+    }
+
+    @Override
+    public void updateUser(SysUser sysUser) {
+
+        UpdateWrapper updateWrapper = new UpdateWrapper();
+
+        updateWrapper.eq("account", sysUser.getAccount());
+
+        updateWrapper.set("last_login", sysUser.getLastLogin());
+
+        this.sysUserMapper.update(null, updateWrapper);
     }
 
 

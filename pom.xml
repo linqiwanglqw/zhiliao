@@ -10,6 +10,7 @@
     <modules>
         <module>zhiliao-api</module>
         <module>zhiliao-admin</module>
+        <module>zhiliao-alipay</module>
     </modules>
     <packaging>pom</packaging>
     <parent>

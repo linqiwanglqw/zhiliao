@@ -38,7 +38,7 @@ public class JWTUtils {
     public static void main(String[] args) {
         String token = JWTUtils.createToken(1404446129264832513L);
         System.out.println(token);
-        Map<String, Object> map = JWTUtils.checkToken(token);
+        Map<String, Object> map = JWTUtils.checkToken("eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTQzOTM3NzgsInVzZXJJZCI6bnVsbCwiaWF0IjoxNjUzNTA0NzQ1fQ.4Wijgjv7k3R7nJFJ_23flkNXKSxEst7xE2PSGlL22Y0");
         System.out.println(map.get("userId"));
     }
 

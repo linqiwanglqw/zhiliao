@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -51,7 +52,18 @@ public class LoginServiceImpl implements LoginService {
         SysUser sysUser = sysUserService.findUser(account,password);
         if (sysUser == null){
             return Result.fail(ErrorCode.ACCOUNT_PWD_NOT_EXIST.getCode(),ErrorCode.ACCOUNT_PWD_NOT_EXIST.getMsg());
+        }else if(sysUser.getDeleted() == 1){
+            return Result.fail(ErrorCode.ACCOUNT_DELETE.getCode(),ErrorCode.ACCOUNT_DELETE.getMsg());
+        }else if(Objects.equals(sysUser.getStatus(), "0")){
+            return Result.fail(ErrorCode.ACCOUNT_BLOCKED.getCode(),ErrorCode.ACCOUNT_BLOCKED.getMsg());
         }
+        //修改登录时间
+        SysUser sysUserUdpate = new SysUser();
+        sysUserUdpate.setNickname(sysUser.getNickname());
+        sysUserUdpate.setId(sysUser.getId());
+        sysUserUdpate.setAccount(account);
+        sysUserUdpate.setLastLogin(System.currentTimeMillis());
+        this.sysUserService.updateUser(sysUserUdpate);
         //生成token
         String token = JWTUtils.createToken(sysUser.getId());
         //存入redis 1代表1天
@@ -123,7 +135,7 @@ public class LoginServiceImpl implements LoginService {
         // 0 为false
         sysUser.setDeleted(0);
         sysUser.setSalt("");
-        sysUser.setStatus("");
+        sysUser.setStatus("1");
         sysUser.setEmail("");
         this.sysUserService.save(sysUser);
 

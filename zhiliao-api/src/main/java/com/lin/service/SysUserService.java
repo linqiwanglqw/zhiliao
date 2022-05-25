@@ -31,4 +31,6 @@ public interface SysUserService {
      * @param sysUser
      */
     void save(SysUser sysUser);
+
+    void updateUser(SysUser sysUser);
 }
