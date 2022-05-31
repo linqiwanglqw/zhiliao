@@ -24,7 +24,7 @@ public class ArticleController {
     @PostMapping
     //加上此注解 代表要对此接口记录日志
     @LogAnnotation(module="文章",operator="获取文章列表接口")
-    @Cache(expire = 5 * 60 * 1000,name = "listArticle")
+    @Cache(expire = 1 * 60 * 1000,name = "listArticle")
     @ApiOperation("查询文章列表接口")
     public Result listArticle(@RequestBody PageParams pageParams){
         return articleService.listArticle(pageParams);
@@ -58,7 +58,7 @@ public class ArticleController {
 
     @PostMapping("new")
     @ApiOperation("查询首页 最新文章接口")
-    @Cache(expire = 5 * 60 * 1000,name = "news_article")
+    @Cache(expire = 1 * 60 * 1000,name = "news_article")
     public Result newArticles(){
         int limit = 5;
         return articleService.newArticles(limit);
@@ -72,7 +72,7 @@ public class ArticleController {
 
 
     @PostMapping("view/{id}")
-    @Cache(expire = 5 * 60 * 1000,name = "view_article")
+    @Cache(expire = 1 * 60 * 1000,name = "view_article")
     @ApiOperation("查询文章详情接口")
     @ApiImplicitParams({
             @ApiImplicitParam(name="id",value = "文章id",required = true,paramType = "path",dataType = "Long")

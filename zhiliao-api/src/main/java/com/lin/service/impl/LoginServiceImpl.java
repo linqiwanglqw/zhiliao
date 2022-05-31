@@ -63,7 +63,7 @@ public class LoginServiceImpl implements LoginService {
         sysUserUdpate.setId(sysUser.getId());
         sysUserUdpate.setAccount(account);
         sysUserUdpate.setLastLogin(System.currentTimeMillis());
-        this.sysUserService.updateUser(sysUserUdpate);
+        this.sysUserService.updateLastlogin(sysUserUdpate);
         //生成token
         String token = JWTUtils.createToken(sysUser.getId());
         //存入redis 1代表1天

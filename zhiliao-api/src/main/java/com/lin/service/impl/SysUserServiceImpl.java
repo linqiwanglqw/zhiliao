@@ -10,6 +10,7 @@ import com.lin.vo.ErrorCode;
 import com.lin.vo.LoginUserVo;
 import com.lin.vo.Result;
 import com.lin.vo.UserVo;
+import com.lin.vo.params.UserPatam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -119,7 +120,7 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public void updateUser(SysUser sysUser) {
+    public void updateLastlogin(SysUser sysUser) {
 
         UpdateWrapper updateWrapper = new UpdateWrapper();
 
@@ -128,6 +129,33 @@ public class SysUserServiceImpl implements SysUserService {
         updateWrapper.set("last_login", sysUser.getLastLogin());
 
         this.sysUserMapper.update(null, updateWrapper);
+    }
+
+    /**
+     * 更新用户信息
+     * @param userPatam
+     * @return
+     */
+    @Override
+    public Result updateUser(UserPatam userPatam) {
+        UpdateWrapper updateWrapper = new UpdateWrapper();
+
+        updateWrapper.eq("account", userPatam.getAccount());
+
+        updateWrapper.set("nickname", userPatam.getNickname());
+
+        updateWrapper.set("email", userPatam.getEmail());
+
+        updateWrapper.set("sex", userPatam.getSex());
+
+        updateWrapper.set("birthday",userPatam.getBirthday());
+
+        int update = this.sysUserMapper.update(null, updateWrapper);
+        if(update==1){
+            return Result.success("信息修改成功");
+        }else {
+            return Result.fail(ErrorCode.UPDATE_ERROR.getCode(),ErrorCode.UPDATE_ERROR.getMsg());
+        }
     }
 
 

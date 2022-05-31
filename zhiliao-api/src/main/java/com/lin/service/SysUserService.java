@@ -3,6 +3,7 @@ package com.lin.service;
 import com.lin.vo.Result;
 import com.lin.vo.UserVo;
 import com.lin.dao.pojo.SysUser;
+import com.lin.vo.params.UserPatam;
 
 public interface SysUserService {
 
@@ -32,5 +33,7 @@ public interface SysUserService {
      */
     void save(SysUser sysUser);
 
-    void updateUser(SysUser sysUser);
+    void updateLastlogin(SysUser sysUser);
+
+    Result updateUser(UserPatam userPatam);
 }

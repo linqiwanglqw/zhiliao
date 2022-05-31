@@ -13,7 +13,8 @@ public enum  ErrorCode {
     ACCOUNT_BLOCKED(10006,"账号被封"),
     NO_PERMISSION(70001,"无访问权限"),
     SESSION_TIME_OUT(90001,"会话超时"),
-    NO_LOGIN(90002,"未登录"),;
+    NO_LOGIN(90002,"未登录"),
+    UPDATE_ERROR(10007,"修改失败"),;
 
     private int code;
     private String msg;

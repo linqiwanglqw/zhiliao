@@ -2,8 +2,8 @@ package com.lin.controller;
 
 import com.lin.dao.pojo.SysUser;
 import com.lin.service.SysUserService;
-import com.lin.utils.UserThreadLocal;
 import com.lin.vo.Result;
+import com.lin.vo.params.UserPatam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,4 +37,13 @@ public class UsersController {
         userByAccount.setPassword(null);
         return Result.success(userByAccount);
     }
+
+    /**
+     * 修改用户信息
+     */
+    @PutMapping ("updateUser")
+    public Result updateUser(@RequestBody UserPatam userPatam){
+       return sysUserService.updateUser(userPatam);
+    }
+
 }

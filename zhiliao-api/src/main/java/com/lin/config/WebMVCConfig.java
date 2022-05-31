@@ -15,7 +15,9 @@ public class WebMVCConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         //跨域配置
-        registry.addMapping("/**").allowedOrigins("http://localhost:8080");
+        registry.addMapping("/**")
+                .allowedMethods("DELETE","GET", "POST", "OPTIONS", "PUT")
+                .allowedOrigins("http://localhost:8080");
     }
 
     @Override
@@ -26,7 +28,8 @@ public class WebMVCConfig implements WebMvcConfigurer {
                 .addPathPatterns("/comments/create/change")
                 .addPathPatterns("/articles/publish")
                 .addPathPatterns("/like/islike")
-                .addPathPatterns("/users/findUserByAccount/*")
+                .addPathPatterns("/users/findUserByAccount/*")//根据账号查找用户信息
+                .addPathPatterns("/users/updateUser")//修改用户信息
                 .addPathPatterns("addInterceptors/**");//点赞接口
     }
 }

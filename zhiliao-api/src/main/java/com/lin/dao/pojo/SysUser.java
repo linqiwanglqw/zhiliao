@@ -35,7 +35,7 @@ public class SysUser {
 
     private String status;
 
-    private Long birthday;
+    private String birthday;
 
     private String ip;
     /**
