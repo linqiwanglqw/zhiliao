@@ -1,5 +1,6 @@
 package com.lin.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.lin.vo.Result;
 import com.lin.vo.UserVo;
 import com.lin.dao.pojo.SysUser;
@@ -10,6 +11,13 @@ public interface SysUserService {
     UserVo findUserVoById(Long id);
 
     SysUser findUserById(Long id);
+
+    /**
+     * 根据openID查是否有用户存在
+     * @param openId
+     * @return
+     */
+    SysUser findUserByOpenId(String openId);
 
     SysUser findUser(String account, String password);
 

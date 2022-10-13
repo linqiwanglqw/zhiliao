@@ -1,6 +1,7 @@
 package com.lin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lin.dao.mapper.SysUserMapper;
 import com.lin.dao.pojo.SysUser;
@@ -17,7 +18,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SysUserServiceImpl implements SysUserService {
+public class SysUserServiceImpl  implements SysUserService {
 
     @Autowired
     private SysUserMapper sysUserMapper;
@@ -50,6 +51,16 @@ public class SysUserServiceImpl implements SysUserService {
         }
         return sysUser;
     }
+
+    @Override
+    public SysUser findUserByOpenId(String openid) {
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("openid",openid);
+        SysUser userInfo = sysUserMapper.selectOne(queryWrapper);
+        return userInfo;
+    }
+
+
 
     @Override
     public SysUser findUser(String account, String password) {

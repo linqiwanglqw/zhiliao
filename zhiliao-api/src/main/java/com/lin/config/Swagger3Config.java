@@ -21,7 +21,7 @@ public class Swagger3Config {
                 .apis(RequestHandlerSelectors.basePackage("com.lin.controller"))//选择指定路径的api
                 .build()
                 .apiInfo(createApiInfo())
-                .enable(false);//正式环境必须为false
+                .enable(true);//正式环境必须为false
     }
     @Bean
     public ApiInfo createApiInfo(){
@@ -43,7 +43,7 @@ public class Swagger3Config {
                 .apis(RequestHandlerSelectors.basePackage("com.lin.controller"))//选择指定路径的api
                 .build()
                 .apiInfo(createApiInfo2())
-                .enable(false);//正式环境必须为false
+                .enable(true);//正式环境必须为false
     }
     @Bean
     public ApiInfo createApiInfo2(){

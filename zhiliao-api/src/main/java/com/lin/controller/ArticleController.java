@@ -9,6 +9,7 @@ import com.lin.vo.params.PageParams;
 import com.lin.vo.params.PageSearchParams;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 //json数据进行交互
