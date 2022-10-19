@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--MyBatis配置文件-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lin.zhiliaoAdmin.dao.mapper.PermissionMapper">
+
+    <select id="findPermissionsByAdminId" parameterType="long" resultType="com.lin.zhiliaoAdmin.dao.pojo.Permission">
+        select * from b_permission where id in (select permission_id from b_admin_permission where admin_id=#{adminId})
+    </select>
+</mapper>
