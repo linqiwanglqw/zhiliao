@@ -25,8 +25,8 @@ public class ScheduleTask {
     @Autowired
     private ArticleMapper articleMapper;
 
-//    @Scheduled(cron = "0/3 * * * * ? ")
-    public void redisLikeDataToMysql(){
+    //    @Scheduled(cron = "0/3 * * * * ? ")
+    public void redisLikeDataToMysql() {
 //        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 //        log.info("time:{},开始执行Redis数据持久化到MySQL任务", df.format(new Date()));
 //        //根据articleId_查找key
@@ -45,7 +45,7 @@ public class ScheduleTask {
 //            //文章id相等的时候
 //            updateWrapper.eq(Article::getBodyId,articleIdKey);
 //            articleMapper.update(articleUpdate,updateWrapper);
-            //集合
+        //集合
 //            System.out.println(setOperations.members());
 //        }
     }

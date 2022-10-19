@@ -23,9 +23,10 @@ public interface ArticleMapper extends BaseMapper<Article> {
 
     /**
      * 修改文章是否可用
+     *
      * @param articleId
      * @return
      */
-    boolean  updateAvailableById(Long articleId);
+    boolean updateAvailableById(Long articleId);
 
 }

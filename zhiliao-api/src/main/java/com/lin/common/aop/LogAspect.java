@@ -20,7 +20,8 @@ import java.lang.reflect.Method;
 public class LogAspect {
 
     @Pointcut("@annotation(com.lin.common.aop.LogAnnotation)")
-    public void pt(){}
+    public void pt() {
+    }
 
     //环绕通知
     @Around("pt()")
@@ -40,25 +41,25 @@ public class LogAspect {
         Method method = signature.getMethod();
         LogAnnotation logAnnotation = method.getAnnotation(LogAnnotation.class);
         log.info("=====================log start================================");
-        log.info("module:{}",logAnnotation.module());
-        log.info("operation:{}",logAnnotation.operator());
+        log.info("module:{}", logAnnotation.module());
+        log.info("operation:{}", logAnnotation.operator());
 
         //请求的方法名
         String className = joinPoint.getTarget().getClass().getName();
         String methodName = signature.getName();
-        log.info("request method:{}",className + "." + methodName + "()");
+        log.info("request method:{}", className + "." + methodName + "()");
 
 //        //请求的参数
         Object[] args = joinPoint.getArgs();
         String params = JSON.toJSONString(args[0]);
-        log.info("params:{}",params);
+        log.info("params:{}", params);
 
         //获取request 设置IP地址
         HttpServletRequest request = HttpContextUtils.getHttpServletRequest();
         log.info("ip:{}", IpUtils.getIpAddr(request));
 
 
-        log.info("excute time : {} ms",time);
+        log.info("excute time : {} ms", time);
         log.info("=====================log end================================");
     }
 }

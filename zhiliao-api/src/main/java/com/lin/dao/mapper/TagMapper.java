@@ -8,6 +8,7 @@ import java.util.List;
 public interface TagMapper extends BaseMapper<Tag> {
     /**
      * 根据文章id查询标签列表
+     *
      * @param articleId
      * @return
      */
@@ -15,6 +16,7 @@ public interface TagMapper extends BaseMapper<Tag> {
 
     /**
      * 查询最热的标签的id 前n条
+     *
      * @param limit
      * @return
      */
@@ -22,6 +24,7 @@ public interface TagMapper extends BaseMapper<Tag> {
 
     /**
      * 根据id返回最热标签名称
+     *
      * @param tagIds
      * @return
      */

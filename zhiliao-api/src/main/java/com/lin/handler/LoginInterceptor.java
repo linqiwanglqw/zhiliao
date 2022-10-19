@@ -24,6 +24,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     /**
      * 登录拦截器
+     *
      * @param request
      * @param response
      * @param handler
@@ -39,7 +40,7 @@ public class LoginInterceptor implements HandlerInterceptor {
          * 3. 如果token 不为空，登录验证 loginService checkToken
          * 4. 如果认证成功 放行即可
          */
-        if (!(handler instanceof HandlerMethod)){
+        if (!(handler instanceof HandlerMethod)) {
             //handler 可能是 RequestResourceHandler springboot 程序 访问静态资源 默认去classpath下的static目录去查询
             return true;
         }
@@ -47,20 +48,20 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         log.info("=================request start===========================");
         String requestURI = request.getRequestURI();
-        log.info("request uri:{}",requestURI);
-        log.info("request method:{}",request.getMethod());
+        log.info("request uri:{}", requestURI);
+        log.info("request method:{}", request.getMethod());
         log.info("token:{}", token);
         log.info("=================request end===========================");
 
 
-        if (StringUtils.isBlank(token)){
+        if (StringUtils.isBlank(token)) {
             Result result = Result.fail(ErrorCode.NO_LOGIN.getCode(), "未登录");
             response.setContentType("application/json;charset=utf-8");
             response.getWriter().print(JSON.toJSONString(result));
             return false;
         }
         SysUser sysUser = loginService.checkToken(token);
-        if (sysUser == null){
+        if (sysUser == null) {
             Result result = Result.fail(ErrorCode.NO_LOGIN.getCode(), "未登录");
             response.setContentType("application/json;charset=utf-8");
             response.getWriter().print(JSON.toJSONString(result));

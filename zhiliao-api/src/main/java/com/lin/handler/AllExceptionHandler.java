@@ -11,10 +11,10 @@ public class AllExceptionHandler {
     //进行异常处理，处理Exception.class的异常
     @ExceptionHandler(Exception.class)
     @ResponseBody //返回json数据
-    public Result doException(Exception ex){
+    public Result doException(Exception ex) {
         //打印异常堆栈信息
         ex.printStackTrace();
-        return Result.fail(520,"系统维护中");
+        return Result.fail(520, "系统维护中");
     }
 
 }

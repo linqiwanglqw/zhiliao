@@ -12,7 +12,7 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 public class zhiliaoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(zhiliaoApplication.class,args);
+        SpringApplication.run(zhiliaoApplication.class, args);
     }
 
 }

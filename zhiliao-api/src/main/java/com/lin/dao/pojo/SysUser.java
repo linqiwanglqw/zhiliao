@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class SysUser {
 
-//    @TableId(type = IdType.ASSIGN_ID) // 默认id类型 （雪花算法）
+    //    @TableId(type = IdType.ASSIGN_ID) // 默认id类型 （雪花算法）
 //    @TableId(type = IdType.AUTO) 数据库自增
     private Long id;
 

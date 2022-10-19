@@ -31,7 +31,7 @@ public class WeixinApiController {
     SysUserService sysUserService;
 
     @Autowired
-    private RedisTemplate<String,String> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
     /**
      * 获取微信登录参数
@@ -44,13 +44,13 @@ public class WeixinApiController {
         map.put("appid", ConstantPropertiesUtil.WX_OPEN_APP_ID);
         map.put("redirect_uri", redirectUri);
         map.put("scope", "snsapi_login");
-        map.put("state", System.currentTimeMillis()+"");//System.currentTimeMillis()+""
+        map.put("state", System.currentTimeMillis() + "");//System.currentTimeMillis()+""
         return Result.success(map);
     }
 
     //微信扫描后回调的方法
     @GetMapping("callback")
-    public String callback(String code,String state) {
+    public String callback(String code, String state) {
         //第一步 获取临时票据 code
 //        System.out.println("code:"+code);
         //第二步 拿着code和微信id和秘钥，请求微信固定地址 ，得到两个值
@@ -78,14 +78,14 @@ public class WeixinApiController {
             //判断数据库是否存在微信的扫描人信息
             //根据openid判断
             SysUser userInfo = sysUserService.findUserByOpenId(openid);
-            if(userInfo == null) { //数据库不存在微信信息
+            if (userInfo == null) { //数据库不存在微信信息
                 //第三步 拿着openid  和  access_token请求微信地址，得到扫描人信息
                 String baseUserInfoUrl = "https://api.weixin.qq.com/sns/userinfo" +
                         "?access_token=%s" +
                         "&openid=%s";
                 String userInfoUrl = String.format(baseUserInfoUrl, access_token, openid);
                 String resultInfo = HttpClientUtils.get(userInfoUrl);
-                System.out.println("resultInfo:"+resultInfo);
+                System.out.println("resultInfo:" + resultInfo);
                 JSONObject resultUserInfoJson = JSONObject.parseObject(resultInfo);
                 //解析用户信息
                 //用户昵称
@@ -94,6 +94,10 @@ public class WeixinApiController {
                 String headimgurl = resultUserInfoJson.getString("headimgurl");
                 //获取扫描人信息添加数据库
                 userInfo = new SysUser();
+                //1 为true
+                userInfo.setAdmin(0);
+                // 0 为false
+                userInfo.setDeleted(0);
                 userInfo.setNickname(nickname);
                 userInfo.setOpenid(openid);
                 userInfo.setAccount(openid);
@@ -105,11 +109,11 @@ public class WeixinApiController {
             //生成token
             String token = JWTUtils.createToken(userInfoTwo.getId());
             //存入redis 1代表1天
-            redisTemplate.opsForValue().set("TOKEN_"+token, JSON.toJSONString(userInfoTwo),1, TimeUnit.DAYS);
+            redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(userInfoTwo), 1, TimeUnit.DAYS);
 
             //跳转到前端页面
             return "redirect:" + ConstantPropertiesUtil.YYGH_BASE_URL + "/#/callback?token="
-                    +token+ "&openid="+userInfoTwo.getOpenid();
+                    + token + "&openid=" + userInfoTwo.getOpenid();
         } catch (Exception e) {
             e.printStackTrace();
             return null;

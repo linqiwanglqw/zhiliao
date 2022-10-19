@@ -15,17 +15,17 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 public class QiniuUtils {
 
-    public static  final String url = "http://rjoaw9l4w.hn-bkt.clouddn.com/";
+    public static final String url = "http://rjoaw9l4w.hn-bkt.clouddn.com/";
 
     @Value("${qiniu.name}")
-    private  String name;
+    private String name;
 
     @Value("${qiniu.accessKey}")
-    private  String accessKey;
+    private String accessKey;
     @Value("${qiniu.accessSecretKey}")
-    private  String accessSecretKey;
+    private String accessSecretKey;
 
-    public  boolean upload(MultipartFile file,String fileName){
+    public boolean upload(MultipartFile file, String fileName) {
 
         //构造一个带指定 Region 对象的配置类   修改指定地点
         Configuration cfg = new Configuration(Region.huanan());
@@ -38,13 +38,13 @@ public class QiniuUtils {
             byte[] uploadBytes = file.getBytes();
             Auth auth = Auth.create(accessKey, accessSecretKey);
             String upToken = auth.uploadToken(bucket);
-                Response response = uploadManager.put(uploadBytes, fileName, upToken);
-                //解析上传成功的结果
-                DefaultPutRet putRet = JSON.parseObject(response.bodyString(), DefaultPutRet.class);
-                return true;
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            Response response = uploadManager.put(uploadBytes, fileName, upToken);
+            //解析上传成功的结果
+            DefaultPutRet putRet = JSON.parseObject(response.bodyString(), DefaultPutRet.class);
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return false;
     }
 }

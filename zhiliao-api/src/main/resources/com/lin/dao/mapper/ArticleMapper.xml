@@ -5,7 +5,7 @@
 <mapper namespace="com.lin.dao.mapper.ArticleMapper">
 
     <resultMap id="articleMap" type="com.lin.dao.pojo.Article">
-        <id column="id" property="id" />
+        <id column="id" property="id"/>
         <result column="author_id" property="authorId"/>
         <result column="comment_counts" property="commentCounts"/>
         <result column="create_date" property="createDate"/>
@@ -26,7 +26,8 @@
     </update>
 
     <select id="listArchives" resultType="com.lin.dao.dos.Archives">
-        select FROM_UNIXTIME(create_date/1000,'%Y') as year,FROM_UNIXTIME(create_date/1000,'%m') as month,count(*) as count from b_article group by year,month
+        select FROM_UNIXTIME(create_date/1000,'%Y') as year,FROM_UNIXTIME(create_date/1000,'%m') as month,count(*) as
+        count from b_article group by year,month
     </select>
 
     <select id="listArticle" resultMap="articleMap">
@@ -41,7 +42,7 @@
                 and id in (select article_id from b_article_tag where tag_id=#{tagId})
             </if>
             <if test="year != null and year.length>0 and month != null and month.length>0">
-               and (FROM_UNIXTIME(create_date/1000,'%Y') =#{year} and FROM_UNIXTIME(create_date/1000,'%m')=#{month})
+                and (FROM_UNIXTIME(create_date/1000,'%Y') =#{year} and FROM_UNIXTIME(create_date/1000,'%m')=#{month})
             </if>
             <if test="keyWord != null and keyWord.length>0">
                 and title LIKE concat('%',#{keyWord},'%')
@@ -51,7 +52,6 @@
         order by weight,create_date desc
 
     </select>
-
 
 
 </mapper>

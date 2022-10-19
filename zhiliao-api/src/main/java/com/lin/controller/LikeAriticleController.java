@@ -15,33 +15,36 @@ public class LikeAriticleController {
 
     /**
      * 查询当前点赞个数
+     *
      * @param likeParam
      * @return
      */
     @PostMapping("/num")
-    public Result like(@RequestBody LikeParam likeParam){
-        Long num= likeService.findLikeNum(likeParam);
+    public Result like(@RequestBody LikeParam likeParam) {
+        Long num = likeService.findLikeNum(likeParam);
         return Result.success(num);
     }
 
     /**
      * 改变点赞状态 要文章id，用户id
+     *
      * @param likeParam
      * @return
      */
     @PostMapping("/islike")
-    public Result islike(@RequestBody LikeParam likeParam){
+    public Result islike(@RequestBody LikeParam likeParam) {
         boolean flag = likeService.findLike(likeParam);
         return Result.success(flag);
     }
 
     /**
      * 查询点赞初始状态 要文章id，用户id
+     *
      * @param
      * @return
      */
     @PostMapping("/initlike")
-    public Result initlike(@RequestBody LikeParam likeParam){
+    public Result initlike(@RequestBody LikeParam likeParam) {
         boolean flag = likeService.selectLike(likeParam);
         return Result.success(flag);
     }

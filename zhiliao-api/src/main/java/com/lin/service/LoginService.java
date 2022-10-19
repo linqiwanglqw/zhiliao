@@ -7,6 +7,7 @@ import com.lin.vo.params.LoginParam;
 public interface LoginService {
     /**
      * 登录功能
+     *
      * @param loginParam
      * @return
      */
@@ -16,6 +17,7 @@ public interface LoginService {
 
     /**
      * 退出登录
+     *
      * @param token
      * @return
      */
@@ -23,6 +25,7 @@ public interface LoginService {
 
     /**
      * 注册
+     *
      * @param loginParam
      * @return
      */

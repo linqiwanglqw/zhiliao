@@ -27,7 +27,7 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private SysUserService sysUserService;
     @Autowired
-    private RedisTemplate<String,String> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
     private static final String slat = "lqw!@#！lsf";
 
@@ -44,18 +44,18 @@ public class LoginServiceImpl implements LoginService {
         String account = loginParam.getAccount();
         String password = loginParam.getPassword();
         //判断是否为空
-        if (StringUtils.isBlank(account) || StringUtils.isBlank(password)){
-            return Result.fail(ErrorCode.PARAMS_ERROR.getCode(),ErrorCode.PARAMS_ERROR.getMsg());
+        if (StringUtils.isBlank(account) || StringUtils.isBlank(password)) {
+            return Result.fail(ErrorCode.PARAMS_ERROR.getCode(), ErrorCode.PARAMS_ERROR.getMsg());
         }
         password = DigestUtils.md5Hex(password + slat);
         //去数据库中查
-        SysUser sysUser = sysUserService.findUser(account,password);
-        if (sysUser == null){
-            return Result.fail(ErrorCode.ACCOUNT_PWD_NOT_EXIST.getCode(),ErrorCode.ACCOUNT_PWD_NOT_EXIST.getMsg());
-        }else if(sysUser.getDeleted() == 1){
-            return Result.fail(ErrorCode.ACCOUNT_DELETE.getCode(),ErrorCode.ACCOUNT_DELETE.getMsg());
-        }else if(Objects.equals(sysUser.getStatus(), "0")){
-            return Result.fail(ErrorCode.ACCOUNT_BLOCKED.getCode(),ErrorCode.ACCOUNT_BLOCKED.getMsg());
+        SysUser sysUser = sysUserService.findUser(account, password);
+        if (sysUser == null) {
+            return Result.fail(ErrorCode.ACCOUNT_PWD_NOT_EXIST.getCode(), ErrorCode.ACCOUNT_PWD_NOT_EXIST.getMsg());
+        } else if (sysUser.getDeleted() == 1) {
+            return Result.fail(ErrorCode.ACCOUNT_DELETE.getCode(), ErrorCode.ACCOUNT_DELETE.getMsg());
+        } else if (Objects.equals(sysUser.getStatus(), "0")) {
+            return Result.fail(ErrorCode.ACCOUNT_BLOCKED.getCode(), ErrorCode.ACCOUNT_BLOCKED.getMsg());
         }
         //修改登录时间
         SysUser sysUserUdpate = new SysUser();
@@ -67,27 +67,28 @@ public class LoginServiceImpl implements LoginService {
         //生成token
         String token = JWTUtils.createToken(sysUser.getId());
         //存入redis 1代表1天
-        redisTemplate.opsForValue().set("TOKEN_"+token, JSON.toJSONString(sysUser),1, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(sysUser), 1, TimeUnit.DAYS);
         return Result.success(token);
     }
 
     /**
      * 获取token对象
+     *
      * @param token
      * @return
      */
     @Override
     public SysUser checkToken(String token) {
-        if (StringUtils.isBlank(token)){
+        if (StringUtils.isBlank(token)) {
             return null;
         }
         //解析token
         Map<String, Object> stringObjectMap = JWTUtils.checkToken(token);
-        if (stringObjectMap == null){
+        if (stringObjectMap == null) {
             return null;
         }
         String userJson = redisTemplate.opsForValue().get("TOKEN_" + token);
-        if (StringUtils.isBlank(userJson)){
+        if (StringUtils.isBlank(userJson)) {
             return null;
         }
         SysUser sysUser = JSON.parseObject(userJson, SysUser.class);
@@ -96,7 +97,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public Result logout(String token) {
-        redisTemplate.delete("TOKEN_"+token);
+        redisTemplate.delete("TOKEN_" + token);
         return Result.success(null);
     }
 
@@ -116,22 +117,22 @@ public class LoginServiceImpl implements LoginService {
         if (StringUtils.isBlank(account)
                 || StringUtils.isBlank(password)
                 || StringUtils.isBlank(nickname)
-        ){
-            return Result.fail(ErrorCode.PARAMS_ERROR.getCode(),ErrorCode.PARAMS_ERROR.getMsg());
+        ) {
+            return Result.fail(ErrorCode.PARAMS_ERROR.getCode(), ErrorCode.PARAMS_ERROR.getMsg());
         }
-        SysUser sysUser =  sysUserService.findUserByAccount(account);
-        if (sysUser != null){
-            return Result.fail(ErrorCode.ACCOUNT_EXIST.getCode(),"该账户已经被注册");
+        SysUser sysUser = sysUserService.findUserByAccount(account);
+        if (sysUser != null) {
+            return Result.fail(ErrorCode.ACCOUNT_EXIST.getCode(), "该账户已经被注册");
         }
         sysUser = new SysUser();
         sysUser.setNickname(nickname);
         sysUser.setAccount(account);
-        sysUser.setPassword(DigestUtils.md5Hex(password+slat));
+        sysUser.setPassword(DigestUtils.md5Hex(password + slat));
         sysUser.setCreateDate(System.currentTimeMillis());
         sysUser.setLastLogin(System.currentTimeMillis());
         sysUser.setAvatar("/static/user/user_1.png");
         //1 为true
-        sysUser.setAdmin(1);
+        sysUser.setAdmin(0);
         // 0 为false
         sysUser.setDeleted(0);
         sysUser.setSalt("");
@@ -141,7 +142,7 @@ public class LoginServiceImpl implements LoginService {
 
         String token = JWTUtils.createToken(sysUser.getId());
 
-        redisTemplate.opsForValue().set("TOKEN_"+token, JSON.toJSONString(sysUser),1, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(sysUser), 1, TimeUnit.DAYS);
         return Result.success(token);
     }
 

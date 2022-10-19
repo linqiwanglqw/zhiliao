@@ -15,24 +15,25 @@ public class UsersController {
     private SysUserService sysUserService;
 
 
-
     /**
      * 获取用户信息
+     *
      * @param token：@RequestHeader("Authorization") String token获取头部token
      * @return
      */
     ///users/currentUser
     @GetMapping("currentUser")
-    public Result currentUser(@RequestHeader("Authorization") String token){
+    public Result currentUser(@RequestHeader("Authorization") String token) {
         return sysUserService.findUserByToken(token);
     }
 
     /**
      * 根据账户查找用户
+     *
      * @return
      */
     @GetMapping("findUserByAccount/{account}")
-    public Result findUserByAccount(@PathVariable("account") String account){
+    public Result findUserByAccount(@PathVariable("account") String account) {
         SysUser userByAccount = sysUserService.findUserByAccount(account);
         userByAccount.setPassword(null);
         return Result.success(userByAccount);
@@ -41,9 +42,9 @@ public class UsersController {
     /**
      * 修改用户信息
      */
-    @PutMapping ("updateUser")
-    public Result updateUser(@RequestBody UserPatam userPatam){
-       return sysUserService.updateUser(userPatam);
+    @PutMapping("updateUser")
+    public Result updateUser(@RequestBody UserPatam userPatam) {
+        return sysUserService.updateUser(userPatam);
     }
 
 }

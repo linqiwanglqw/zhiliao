@@ -9,6 +9,7 @@ public interface TagService {
 
     /**
      * 查询对应文章的标签
+     *
      * @param articleId
      * @return
      */
@@ -16,6 +17,7 @@ public interface TagService {
 
     /**
      * 最热标签
+     *
      * @param limit
      * @return
      */
@@ -23,6 +25,7 @@ public interface TagService {
 
     /**
      * 查询所有的文章标签
+     *
      * @return
      */
     Result findAll();

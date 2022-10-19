@@ -27,7 +27,7 @@
     </properties>
 
     <dependencyManagement>
-    <dependencies>
+        <dependencies>
 
             <dependency>
                 <groupId>com.alibaba</groupId>

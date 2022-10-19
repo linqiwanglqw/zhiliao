@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * HttpServletRequest
- *
  */
 public class HttpContextUtils {
 

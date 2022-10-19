@@ -28,7 +28,7 @@ public class Article {
      */
     private Long bodyId;
     /**
-     *类别id
+     * 类别id
      */
     private Long categoryId;
 

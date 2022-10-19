@@ -18,26 +18,26 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SysUserServiceImpl  implements SysUserService {
+public class SysUserServiceImpl implements SysUserService {
 
     @Autowired
     private SysUserMapper sysUserMapper;
     @Autowired
-    private RedisTemplate<String,String> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
     @Autowired
     private LoginService loginService;
 
     @Override
     public UserVo findUserVoById(Long id) {
         SysUser sysUser = sysUserMapper.selectById(id);
-        if (sysUser == null){
+        if (sysUser == null) {
             sysUser = new SysUser();
             sysUser.setId(1L);
             sysUser.setAvatar("/static/img/logo.b3a48c0.png");
             sysUser.setNickname("用户名不存在");
         }
-        UserVo userVo  = new UserVo();
-        BeanUtils.copyProperties(sysUser,userVo);
+        UserVo userVo = new UserVo();
+        BeanUtils.copyProperties(sysUser, userVo);
         userVo.setId(String.valueOf(sysUser.getId()));
         return userVo;
     }
@@ -45,7 +45,7 @@ public class SysUserServiceImpl  implements SysUserService {
     @Override
     public SysUser findUserById(Long id) {
         SysUser sysUser = sysUserMapper.selectById(id);
-        if (sysUser == null){
+        if (sysUser == null) {
             sysUser = new SysUser();
             sysUser.setNickname("用户名不存在");
         }
@@ -55,18 +55,17 @@ public class SysUserServiceImpl  implements SysUserService {
     @Override
     public SysUser findUserByOpenId(String openid) {
         QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("openid",openid);
+        queryWrapper.eq("openid", openid);
         SysUser userInfo = sysUserMapper.selectOne(queryWrapper);
         return userInfo;
     }
 
 
-
     @Override
     public SysUser findUser(String account, String password) {
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysUser::getAccount,account);
-        queryWrapper.eq(SysUser::getPassword,password);
+        queryWrapper.eq(SysUser::getAccount, account);
+        queryWrapper.eq(SysUser::getPassword, password);
         queryWrapper.select(SysUser::getAccount,
                 SysUser::getId,
                 SysUser::getAvatar,
@@ -81,6 +80,7 @@ public class SysUserServiceImpl  implements SysUserService {
 
     /**
      * 根据token获取用户信息
+     *
      * @param token
      * @return
      */
@@ -94,8 +94,8 @@ public class SysUserServiceImpl  implements SysUserService {
          */
         //获取token
         SysUser sysUser = loginService.checkToken(token);
-        if (sysUser == null){
-            return Result.fail(ErrorCode.TOKEN_ERROR.getCode(),ErrorCode.TOKEN_ERROR.getMsg());
+        if (sysUser == null) {
+            return Result.fail(ErrorCode.TOKEN_ERROR.getCode(), ErrorCode.TOKEN_ERROR.getMsg());
         }
         LoginUserVo loginUserVo = new LoginUserVo();
         loginUserVo.setId(String.valueOf(sysUser.getId()));
@@ -108,19 +108,21 @@ public class SysUserServiceImpl  implements SysUserService {
 
     /**
      * 注册 查询账号
+     *
      * @param account
      * @return
      */
     @Override
     public SysUser findUserByAccount(String account) {
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysUser::getAccount,account);
+        queryWrapper.eq(SysUser::getAccount, account);
         queryWrapper.last("limit 1");
         return this.sysUserMapper.selectOne(queryWrapper);
     }
 
     /**
      * 注册 保存用户
+     *
      * @param sysUser
      */
     @Override
@@ -144,6 +146,7 @@ public class SysUserServiceImpl  implements SysUserService {
 
     /**
      * 更新用户信息
+     *
      * @param userPatam
      * @return
      */
@@ -159,13 +162,13 @@ public class SysUserServiceImpl  implements SysUserService {
 
         updateWrapper.set("sex", userPatam.getSex());
 
-        updateWrapper.set("birthday",userPatam.getBirthday());
+        updateWrapper.set("birthday", userPatam.getBirthday());
 
         int update = this.sysUserMapper.update(null, updateWrapper);
-        if(update==1){
+        if (update == 1) {
             return Result.success("信息修改成功");
-        }else {
-            return Result.fail(ErrorCode.UPDATE_ERROR.getCode(),ErrorCode.UPDATE_ERROR.getMsg());
+        } else {
+            return Result.fail(ErrorCode.UPDATE_ERROR.getCode(), ErrorCode.UPDATE_ERROR.getMsg());
         }
     }
 

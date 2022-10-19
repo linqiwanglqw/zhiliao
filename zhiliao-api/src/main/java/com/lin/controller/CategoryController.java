@@ -18,20 +18,22 @@ public class CategoryController {
 
     /**
      * 写文章 获取文章分类
+     *
      * @return
      */
     @GetMapping
-    public Result categories(){
+    public Result categories() {
         return categoryService.findAll();
     }
 
 
     /**
      * 获取导航栏分类信息
+     *
      * @return
      */
     @GetMapping("detail")
-    public Result categoriesDetail(){
+    public Result categoriesDetail() {
         return categoryService.findAllDetail();
     }
 
@@ -39,11 +41,12 @@ public class CategoryController {
 
     /**
      * 显示分类详情
+     *
      * @param id
      * @return
      */
     @GetMapping("detail/{id}")
-    public Result categoryDetailById(@PathVariable("id") Long id){
+    public Result categoryDetailById(@PathVariable("id") Long id) {
         return categoryService.categoryDetailById(id);
     }
 }

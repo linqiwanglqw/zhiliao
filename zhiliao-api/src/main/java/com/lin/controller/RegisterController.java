@@ -17,7 +17,7 @@ public class RegisterController {
     private LoginService loginService;
 
     @PostMapping
-    public Result register(@RequestBody LoginParam loginParam){
+    public Result register(@RequestBody LoginParam loginParam) {
         return loginService.register(loginParam);
     }
 }

@@ -20,19 +20,21 @@ public class TagServiceImpl implements TagService {
     @Autowired
     private TagMapper tagMapper;
 
-    public TagVo copy(Tag tag){
+    public TagVo copy(Tag tag) {
         TagVo tagVo = new TagVo();
-        BeanUtils.copyProperties(tag,tagVo);
+        BeanUtils.copyProperties(tag, tagVo);
         tagVo.setId(String.valueOf(tag.getId()));
         return tagVo;
     }
-    public List<TagVo> copyList(List<Tag> tagList){
+
+    public List<TagVo> copyList(List<Tag> tagList) {
         List<TagVo> tagVoList = new ArrayList<>();
         for (Tag tag : tagList) {
             tagVoList.add(copy(tag));
         }
         return tagVoList;
     }
+
     @Override
     public List<TagVo> findTagsByArticleId(Long articleId) {
         //查询标签
@@ -43,6 +45,7 @@ public class TagServiceImpl implements TagService {
 
     /**
      * 查询最热标签前n条
+     *
      * @param limit
      * @return
      */
@@ -53,7 +56,7 @@ public class TagServiceImpl implements TagService {
          * 2. 查询 根据tag_id 分组 计数，从大到小 排列 取前 limit个
          */
         List<Long> tagIds = tagMapper.findHotsTagIds(limit);
-        if (CollectionUtils.isEmpty(tagIds)){
+        if (CollectionUtils.isEmpty(tagIds)) {
             //返回返回一个空的List
             return Result.success(Collections.emptyList());
         }
@@ -66,7 +69,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public Result findAll() {
         LambdaQueryWrapper<Tag> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.select(Tag::getId,Tag::getTagName);
+        queryWrapper.select(Tag::getId, Tag::getTagName);
         List<Tag> tags = this.tagMapper.selectList(queryWrapper);
         return Result.success(copyList(tags));
     }

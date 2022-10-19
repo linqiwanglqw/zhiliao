@@ -19,9 +19,9 @@ public class PageParams {
 
     private String keyWord;
 
-    public String getMonth(){
-        if (this.month != null && this.month.length() == 1){
-            return "0"+this.month;
+    public String getMonth() {
+        if (this.month != null && this.month.length() == 1) {
+            return "0" + this.month;
         }
         return this.month;
     }

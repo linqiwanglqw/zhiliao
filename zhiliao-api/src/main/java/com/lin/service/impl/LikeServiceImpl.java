@@ -8,33 +8,33 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 
-
 @Service
 public class LikeServiceImpl implements LikeService {
     @Autowired
     StringRedisTemplate redisTemplate;
+
     @Override
     public Long findLikeNum(LikeParam likeParam) {
         //计算集合大小
-        Long size = redisTemplate.opsForSet().size("articleId_"+likeParam.getArticleId());
+        Long size = redisTemplate.opsForSet().size("articleId_" + likeParam.getArticleId());
         return size;
     }
 
     /**
      * 点赞后
+     *
      * @param likeParam
      * @return
      */
     @Override
     public boolean findLike(LikeParam likeParam) {
         boolean bl;
-        boolean flag = redisTemplate.opsForSet().isMember("articleId_"+likeParam.getArticleId(),likeParam.getUserId());
-        if (flag)
-        {
-            redisTemplate.opsForSet().remove("articleId_"+likeParam.getArticleId(),likeParam.getUserId());
+        boolean flag = redisTemplate.opsForSet().isMember("articleId_" + likeParam.getArticleId(), likeParam.getUserId());
+        if (flag) {
+            redisTemplate.opsForSet().remove("articleId_" + likeParam.getArticleId(), likeParam.getUserId());
             bl = false;
-        }else {
-            redisTemplate.opsForSet().add("articleId_"+likeParam.getArticleId(),likeParam.getUserId());
+        } else {
+            redisTemplate.opsForSet().add("articleId_" + likeParam.getArticleId(), likeParam.getUserId());
             bl = true;
         }
         return bl;
@@ -45,7 +45,7 @@ public class LikeServiceImpl implements LikeService {
      */
     @Override
     public boolean selectLike(LikeParam likeParam) {
-        boolean flag = redisTemplate.opsForSet().isMember("articleId_"+likeParam.getArticleId(),likeParam.getUserId());
+        boolean flag = redisTemplate.opsForSet().isMember("articleId_" + likeParam.getArticleId(), likeParam.getUserId());
         return flag;
     }
 }

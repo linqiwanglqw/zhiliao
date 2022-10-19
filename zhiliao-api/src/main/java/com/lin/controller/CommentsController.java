@@ -16,17 +16,18 @@ public class CommentsController {
 
     /**
      * 评论
+     *
      * @param id
      * @return
      */
     @GetMapping("article/{id}")
-    public Result comments(@PathVariable("id") Long id){
+    public Result comments(@PathVariable("id") Long id) {
         return commentsService.commentsByArticleId(id);
     }
 
 
     @PostMapping("create/change")
-    public Result comment(@RequestBody CommentParam commentParam){
+    public Result comment(@RequestBody CommentParam commentParam) {
         return commentsService.comment(commentParam);
     }
 }

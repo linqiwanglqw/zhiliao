@@ -14,6 +14,7 @@ public interface SysUserService {
 
     /**
      * 根据openID查是否有用户存在
+     *
      * @param openId
      * @return
      */
@@ -23,6 +24,7 @@ public interface SysUserService {
 
     /**
      * 根据token查询用户信息
+     *
      * @param token
      * @return
      */
@@ -30,6 +32,7 @@ public interface SysUserService {
 
     /**
      * 根据账户查找用户
+     *
      * @param account
      * @return
      */
@@ -37,6 +40,7 @@ public interface SysUserService {
 
     /**
      * 保存用户
+     *
      * @param sysUser
      */
     void save(SysUser sysUser);
