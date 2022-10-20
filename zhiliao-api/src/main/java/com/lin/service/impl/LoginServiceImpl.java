@@ -12,9 +12,12 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +31,8 @@ public class LoginServiceImpl implements LoginService {
     private SysUserService sysUserService;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     private static final String slat = "lqw!@#！lsf";
 
@@ -50,7 +55,11 @@ public class LoginServiceImpl implements LoginService {
         password = DigestUtils.md5Hex(password + slat);
         //去数据库中查
         SysUser sysUser = sysUserService.findUser(account, password);
-        if (sysUser == null) {
+        //检测
+        Result codeResult = ackCode(account);
+        if(codeResult != null && sysUser==null){
+          return codeResult;
+        } else if (sysUser == null ) {
             return Result.fail(ErrorCode.ACCOUNT_PWD_NOT_EXIST.getCode(), ErrorCode.ACCOUNT_PWD_NOT_EXIST.getMsg());
         } else if (sysUser.getDeleted() == 1) {
             return Result.fail(ErrorCode.ACCOUNT_DELETE.getCode(), ErrorCode.ACCOUNT_DELETE.getMsg());
@@ -66,9 +75,40 @@ public class LoginServiceImpl implements LoginService {
         this.sysUserService.updateLastlogin(sysUserUdpate);
         //生成token
         String token = JWTUtils.createToken(sysUser.getId());
-        //存入redis 1代表1天
-        redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(sysUser), 1, TimeUnit.DAYS);
+        //存入redis 7代表7天
+        redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(sysUser), 7, TimeUnit.DAYS);
         return Result.success(token);
+    }
+
+    /**
+     * 防止暴力破解
+     * @param account
+     * @return
+     */
+    public Result ackCode(String account){
+        //统计尝试的登录记录
+        //该记录不会被验证码删除
+        String redisKeySum = "LOGINSUMCOUNT::USER::LOGINNAME::" + account;
+        stringRedisTemplate.boundValueOps(redisKeySum).increment(1);
+        stringRedisTemplate.expire(redisKeySum,100 , TimeUnit.MINUTES);
+        String numCont = stringRedisTemplate.opsForValue().get(redisKeySum);
+        //对登录次数做记录 防止暴力登录
+        String redisKey = "LOGINCOUNT::USER::LOGINNAME::" + account;
+        stringRedisTemplate.boundValueOps(redisKey).increment(1);
+        stringRedisTemplate.expire(redisKey,1 , TimeUnit.MINUTES);
+        String num = stringRedisTemplate.opsForValue().get(redisKey);
+
+
+        assert num != null;
+        if(Integer.parseInt(num)>=3){
+            return Result.fail(ErrorCode.ACCOUNT_FREQUENTLY.getCode(),ErrorCode.ACCOUNT_FREQUENTLY.getMsg());
+        }
+        assert numCont != null;
+        //防止绕过滑块破解密码
+        if(Integer.parseInt(numCont)>=100){
+            return Result.fail(ErrorCode.ACCOUNT_FREQUENTLY.getCode(),ErrorCode.ACCOUNT_FREQUENTLY.getMsg());
+        }
+        return null;
     }
 
     /**
