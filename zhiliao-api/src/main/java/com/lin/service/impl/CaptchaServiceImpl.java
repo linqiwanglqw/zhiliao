@@ -33,6 +33,8 @@ public class CaptchaServiceImpl implements CaptchaService {
     public String checkImageCode(String imageKey, String imageCode) {
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
         String text = ops.get("imageCode:" + imageKey);
+        System.out.println(text+">>>>>>>>>>>"+imageKey);
+        stringRedisTemplate.delete("imageCode:" + imageKey);
         if(StrUtil.isBlank(text)){
             return "验证码已失效";
         }
@@ -43,13 +45,13 @@ public class CaptchaServiceImpl implements CaptchaService {
         return null;
     }
     /**
-     * 缓存验证码，有效期5分钟
+     * 缓存验证码，有效期3分钟
      * @param key
      * @param code
      **/
     public void saveImageCode(String key, String code) {
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
-        ops.set("imageCode:" + key, code, 5, TimeUnit.MINUTES);
+        ops.set("imageCode:" + key, code, 3, TimeUnit.MINUTES);
     }
 
     /**
