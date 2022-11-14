@@ -30,10 +30,10 @@
  ### 项目发布采用技术
    docker，nginx，jdk8
    
-   使用docker-compose编排容器，dockerfile的作用是构建镜像
+   使用docker-compose编排容器，dockerfile构建镜像
    
 ## 线上地址
-http://106.12.106.46   （服务器过期了，没钱续费）
+http://106.12.106.46   （服务器过期了）
 
 ## 服务器要求
 1核1G（以上），但有时候会挂掉，建议更高配置的！
