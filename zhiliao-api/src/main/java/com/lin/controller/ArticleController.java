@@ -1,5 +1,7 @@
 package com.lin.controller;
 
+import com.lin.common.aop.LimitType;
+import com.lin.common.aop.RateLimiter;
 import com.lin.vo.Result;
 import com.lin.common.aop.LogAnnotation;
 import com.lin.common.cache.Cache;
@@ -9,7 +11,6 @@ import com.lin.vo.params.PageParams;
 import com.lin.vo.params.PageSearchParams;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 //json数据进行交互
@@ -21,12 +22,22 @@ public class ArticleController {
     @Autowired
     private ArticleService articleService;
 
+    /**
+     * 限流接口
+     * @return
+     */
+    @RateLimiter(time = 3,count = 1,limitType = LimitType.IP)
+    @GetMapping("/test/{id}")
+    public String test(@PathVariable("id") String id) {
+        System.out.println(id);
+        return "ok";
+    }
 
     @PostMapping
     //加上此注解 代表要对此接口记录日志
     @LogAnnotation(module = "文章", operator = "获取文章列表接口")
     @Cache(expire = 1 * 60 * 1000, name = "listArticle")
-    @ApiOperation("查询文章列表接口")
+    @ApiOperation("按年月份查询文章列表接口")
     public Result listArticle(@RequestBody PageParams pageParams) {
         return articleService.listArticle(pageParams);
     }
@@ -89,6 +100,7 @@ public class ArticleController {
 
     @PostMapping("publish")
     @ApiOperation("新增文章接口")
+    @RateLimiter(time = 10,count = 1,limitType = LimitType.IP)
     public Result publish(@RequestBody ArticleParam articleParam) {
         return articleService.publish(articleParam);
     }

@@ -17,4 +17,12 @@ public class AllExceptionHandler {
         return Result.fail(520, "系统维护中");
     }
 
+    //进行异常处理，处理ServiceException.class的异常
+    @ExceptionHandler(ServiceException.class)
+    @ResponseBody //返回json数据
+    public Result doServiceException(ServiceException ex) {
+//        ex.printStackTrace();
+        return Result.fail(521, "请勿频繁操作");
+    }
+
 }

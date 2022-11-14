@@ -64,6 +64,11 @@ public class ArticleServiceImpl implements ArticleService {
         return Result.success(copyList(records, true, true));
     }
 
+    /**
+     * 搜索
+     * @param pageSearchParams
+     * @return
+     */
     @Override
     public Result listSearchArticle(PageSearchParams pageSearchParams) {
         if ("".equals(pageSearchParams.getKeyWord())) {
@@ -159,7 +164,10 @@ public class ArticleServiceImpl implements ArticleService {
             //已存在的删除标签
             HashMap<String, Object> map = new HashMap<>();
             map.put("article_id", articleParam.getId());
+            //删除标签
             articleTagMapper.deleteByMap(map);
+            //删除baby内容
+            articleBodyMapper.deleteByMap(map);
             //更新其他数据
             article = new Article();
             article.setId(articleParam.getId());
@@ -207,12 +215,12 @@ public class ArticleServiceImpl implements ArticleService {
         Map<String, String> map = new HashMap<>();
         map.put("id", article.getId().toString());
 
-//        if(isEdit){
-        //当前文章更新了
-        ArticleMessage articleMessage = new ArticleMessage();
-        articleMessage.setArticleId(article.getId());
-        rocketMQTemplate.convertAndSend("api-update-article", articleMessage);
-//        }
+        if(isEdit){
+            //当前文章更新了
+            ArticleMessage articleMessage = new ArticleMessage();
+            articleMessage.setArticleId(article.getId());
+            rocketMQTemplate.convertAndSend("api-update-article", articleMessage);
+        }
         return Result.success(map);
     }
 

@@ -33,7 +33,7 @@ public class ArticleListener implements RocketMQListener<ArticleMessage> {
         Long articleId = articleMessage.getArticleId();
         String params = DigestUtils.md5Hex(articleId.toString());
         String redisKey = "view_article::ArticleController::findArticleById::" + params;
-        //查询文章数据，从线程中修改阅读数，并发挥对应vo
+        //查询文章数据，从线程中修改阅读数，并返回对应vo
         Result articleResult = articleService.findArticleById(articleId);
         //修改对应key的values的值
         redisTemplate.opsForValue().set(redisKey, JSON.toJSONString(articleResult), Duration.ofMillis(5 * 60 * 1000));
