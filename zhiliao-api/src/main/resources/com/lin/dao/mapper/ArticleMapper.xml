@@ -45,7 +45,8 @@
                 and (FROM_UNIXTIME(create_date/1000,'%Y') =#{year} and FROM_UNIXTIME(create_date/1000,'%m')=#{month})
             </if>
             <if test="keyWord != null and keyWord.length>0">
-                and title LIKE concat('%',#{keyWord},'%')
+--                 and title LIKE concat('%',#{keyWord},'%')
+                and title LIKE concat(#{keyWord},'%')
             </if>
 
         </where>

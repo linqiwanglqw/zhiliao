@@ -11,12 +11,15 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 //aop 定义一个切面，切面定义了切点和通知的关系
 @Aspect
@@ -24,11 +27,12 @@ import java.time.Duration;
 @Slf4j
 public class CacheAspect {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+
+    @Autowired
+    private RedissonClient redissonClient;
 
     //切入点
     @Pointcut("@annotation(com.lin.common.cache.Cache)")
@@ -74,13 +78,35 @@ public class CacheAspect {
             String redisValue = redisTemplate.opsForValue().get(redisKey);
             if (StringUtils.isNotEmpty(redisValue)) {
                 log.info("走了缓存~~~,{},{}", className, methodName);
-                Result result = JSON.parseObject(redisValue, Result.class);
-                return result;
+                return JSON.parseObject(redisValue, Result.class);
             }
-            Object proceed = pjp.proceed();
-            redisTemplate.opsForValue().set(redisKey, JSON.toJSONString(proceed), Duration.ofMillis(expire));
-            log.info("存入缓存~~~ {},{}", className, methodName);
-            return proceed;
+
+            final String dISTRIBUTEDD_LOCK = "DISTRIBUTED_DLOCK::"+redisKey;
+            RLock lock = redissonClient.getLock(dISTRIBUTEDD_LOCK);
+            //2、加锁 默认加锁时间30s
+            lock.lock();
+            try{
+                redisValue = redisTemplate.opsForValue().get(redisKey);
+                if (StringUtils.isNotEmpty(redisValue)) {
+                    log.info("走了缓存~~~,{},{}", className, methodName);
+                    return JSON.parseObject(redisValue, Result.class);
+                }else {
+                    //调用原始方法
+                    Object proceed = pjp.proceed();
+                    log.info("加锁成功，执行查询数据库{}",Thread.currentThread().getId());
+                    Thread.sleep(200);
+                    redisTemplate.opsForValue().set(redisKey, JSON.toJSONString(proceed), Duration.ofMillis(expire));
+                    log.info("存入缓存~~~ {},{}", className, methodName);
+                    return proceed;
+                }
+            }catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }finally {
+                //3、解锁
+                log.info("释放锁{}",Thread.currentThread().getId());
+                lock.unlock();
+            }
+
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }

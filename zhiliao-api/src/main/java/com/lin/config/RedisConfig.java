@@ -1,5 +1,8 @@
 package com.lin.config;
 
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -73,5 +76,15 @@ public class RedisConfig extends CachingConfigurerSupport {
                 "    redis.call('expire', key, time)\n" +
                 "end\n" +
                 "return tonumber(current);";
+    }
+
+    /**
+     * 配置Redisson客户端
+     */
+    @Bean
+    public RedissonClient redissonClient(){
+        Config config = new Config();
+        config.useSingleServer().setAddress("redis://127.0.0.1:6379");
+        return Redisson.create(config);
     }
 }
