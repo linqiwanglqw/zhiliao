@@ -1,5 +1,6 @@
 package com.lin.controller;
 
+import com.lin.common.aop.LogAnnotation;
 import com.lin.dao.pojo.SysUser;
 import com.lin.service.SysUserService;
 import com.lin.vo.Result;
@@ -43,6 +44,7 @@ public class UsersController {
      * 修改用户信息
      */
     @PutMapping("updateUser")
+    @LogAnnotation(module = "用户信息", operator = "修改用户信息接口")
     public Result updateUser(@RequestBody UserPatam userPatam) {
         return sysUserService.updateUser(userPatam);
     }

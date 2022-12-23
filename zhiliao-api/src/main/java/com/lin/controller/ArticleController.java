@@ -11,6 +11,7 @@ import com.lin.vo.params.PageParams;
 import com.lin.vo.params.PageSearchParams;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 //json数据进行交互
@@ -24,10 +25,10 @@ public class ArticleController {
 
     /**
      * 限流接口
-     * @return
      */
     @RateLimiter(time = 3,count = 1,limitType = LimitType.IP)
     @GetMapping("/test/{id}")
+    @LogAnnotation(module = "文章", operator = "test接口")
     public String test(@PathVariable("id") String id) {
         System.out.println(id);
         return "ok";
@@ -35,7 +36,7 @@ public class ArticleController {
 
     @PostMapping
     //加上此注解 代表要对此接口记录日志
-    @LogAnnotation(module = "文章", operator = "获取文章列表接口")
+//    @LogAnnotation(module = "文章", operator = "获取文章列表接口")
     @Cache(expire = 1 * 60 * 1000, name = "listArticle")
     @ApiOperation("按年月份查询文章列表接口")
     public Result listArticle(@RequestBody PageParams pageParams) {
@@ -43,9 +44,9 @@ public class ArticleController {
     }
 
     @ApiOperation("查询文章搜索列表接口")
-    @PostMapping("/search")
+    @GetMapping("/search")
     //加上此注解 代表要对此接口记录日志
-    @LogAnnotation(module = "文章", operator = "搜索文章列表")
+//    @LogAnnotation(module = "文章", operator = "搜索文章列表")
     public Result listSearchArticle(@RequestBody PageSearchParams pageSearchParams) {
         return articleService.listSearchArticle(pageSearchParams);
     }
@@ -54,21 +55,21 @@ public class ArticleController {
     @ApiOperation("查询文章搜索列表接口")
     @PostMapping("/headerSearch")
     //加上此注解 代表要对此接口记录日志
-    @LogAnnotation(module = "文章", operator = "搜索文章列表")
+//    @LogAnnotation(module = "文章", operator = "搜索文章列表")
     public Result HeaderSearchArticle(@RequestBody ArticleParam articleParam) {
         String search = articleParam.getSearch();
         return articleService.searchArticle(search);
     }
 
-    @PostMapping("hot")
-    @Cache(expire = 5 * 60 * 1000, name = "hot_article")
+    @GetMapping("hot")
     @ApiOperation("查询首页 最热文章接口")
+    @Cache(expire = 5 * 60 * 1000, name = "hot_article")
     public Result hotArticle() {
         int limit = 5;
         return articleService.hotArticle(limit);
     }
 
-    @PostMapping("new")
+    @GetMapping("new")
     @ApiOperation("查询首页 最新文章接口")
     @Cache(expire = 1 * 60 * 1000, name = "news_article")
     public Result newArticles() {
@@ -76,14 +77,14 @@ public class ArticleController {
         return articleService.newArticles(limit);
     }
 
-    @PostMapping("listArchives")
+    @GetMapping("listArchives")
     @ApiOperation("查询首页 文章归档接口")
     public Result listArchives() {
         return articleService.listArchives();
     }
 
 
-    @PostMapping("view/{id}")
+    @GetMapping("view/{id}")
     @Cache(expire = 1 * 60 * 1000, name = "view_article")
     @ApiOperation("查询文章详情接口")
     @ApiImplicitParams({
@@ -97,10 +98,10 @@ public class ArticleController {
         return articleService.findArticleById(articleId);
     }
 
-
     @PostMapping("publish")
-    @ApiOperation("新增文章接口")
+    @ApiOperation("新增修改文章接口")
     @RateLimiter(time = 10,count = 1,limitType = LimitType.IP)
+    @LogAnnotation(module = "文章", operator = "新增修改文章接口")
     public Result publish(@RequestBody ArticleParam articleParam) {
         return articleService.publish(articleParam);
     }
@@ -112,8 +113,8 @@ public class ArticleController {
     }
 
     @DeleteMapping("delArticle/{id}")
-    @CrossOrigin
     @ApiOperation("删除文章编辑数据接口")
+    @LogAnnotation(module = "文章", operator = "删除文章接口")
     public Result delArticleById(@PathVariable("id") Long articleId) {
         return Result.success(articleService.delAticleById(articleId));
     }

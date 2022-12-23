@@ -19,7 +19,6 @@ public class TagsController {
      *
      * @return
      */
-    //   /tags/hot
     @GetMapping("hot")
     public Result hot() {
         int limit = 6;

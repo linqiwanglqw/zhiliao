@@ -1,5 +1,6 @@
 package com.lin.controller;
 
+import com.lin.common.aop.LogAnnotation;
 import com.lin.service.LikeService;
 import com.lin.vo.Result;
 import com.lin.vo.params.LikeParam;
@@ -32,6 +33,7 @@ public class LikeAriticleController {
      * @return
      */
     @PostMapping("/islike")
+    @LogAnnotation(module = "点赞", operator = "添加点赞接口")
     public Result islike(@RequestBody LikeParam likeParam) {
         boolean flag = likeService.findLike(likeParam);
         return Result.success(flag);

@@ -18,7 +18,9 @@ import java.util.Set;
 
 @Slf4j
 @Component
-@RocketMQMessageListener(topic = "api-update-article", consumerGroup = "api-update-article-group")
+@RocketMQMessageListener(topic = "api-update-article",
+        selectorExpression = "SEND_ARTICLE_MSG",
+        consumerGroup = "api-update-article-group")
 public class ArticleListener implements RocketMQListener<ArticleMessage> {
 
     @Autowired

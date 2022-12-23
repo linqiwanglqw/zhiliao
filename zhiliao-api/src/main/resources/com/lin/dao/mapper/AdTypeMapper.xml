@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lin.dao.mapper.AdTypeMapper">
+
+    <resultMap type="com.lin.dao.pojo.AdType" id="AdTypeResult">
+        <result property="adTyepId"    column="ad_tyep_id"    />
+        <result property="adTypeTitle"    column="ad_type_title"    />
+        <result property="adTypeTag"    column="ad_type_tag"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectAdTypeVo">
+        select ad_tyep_id, ad_type_title, ad_type_tag, del_flag, status, create_by, create_time, update_by, update_time, remark
+        from b_ad_type
+    </sql>
+
+    <select id="selectAdTypeList" parameterType="com.lin.dao.pojo.AdType" resultMap="AdTypeResult">
+        <include refid="selectAdTypeVo"/>
+        <where>
+            <if test="adType.delFlag != null  and adType.delFlag != ''"> and del_flag = #{adType.delFlag}</if>
+            <if test="adType.status != null  and adType.status != ''"> and status = #{adType.status}</if>
+        </where>
+    </select>
+
+    <select id="selectAdTypeByAdTyepId" resultType="com.lin.dao.pojo.AdType">
+        <include refid="selectAdTypeVo"/>
+        where ad_tyep_id = #{adTyepId} and del_flag='0' and status='0'
+    </select>
+
+
+    <insert id="insertAdType" parameterType="com.lin.dao.pojo.AdType">
+        insert into b_ad_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="adTyepId != null">ad_tyep_id,</if>
+            <if test="adTypeTitle != null">ad_type_title,</if>
+            <if test="adTypeTag != null">ad_type_tag,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="adTyepId != null">#{adTyepId},</if>
+            <if test="adTypeTitle != null">#{adTypeTitle},</if>
+            <if test="adTypeTag != null">#{adTypeTag},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAdType" parameterType="com.lin.dao.pojo.AdType">
+        update b_ad_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="adTypeTitle != null">ad_type_title = #{adTypeTitle},</if>
+            <if test="adTypeTag != null">ad_type_tag = #{adTypeTag},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where ad_tyep_id = #{adTyepId}
+    </update>
+
+
+    <update id="deleteAdTypeByAdTyepId" parameterType="Long">
+        update b_ad_type
+        set del_flag = '2'
+        where ad_tyep_id = #{adTyepId}
+    </update>
+
+
+</mapper>

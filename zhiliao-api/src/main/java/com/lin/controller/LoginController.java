@@ -1,5 +1,6 @@
 package com.lin.controller;
 
+import com.lin.common.aop.LogAnnotation;
 import com.lin.common.verificationCode.Captcha;
 import com.lin.service.CaptchaService;
 import com.lin.vo.CodeVo;
@@ -27,6 +28,7 @@ public class LoginController {
 
     @PostMapping
     @ApiOperation("登录接口")
+    @LogAnnotation(module = "登录", operator = "登录接口")
     public Result login(@RequestBody LoginParam loginParam) {
         //登录=》 验证用户 =》 访问用户表
         return loginService.login(loginParam);
@@ -40,6 +42,7 @@ public class LoginController {
 
     @PostMapping("/checkCheckCode")
     @ApiOperation("验证验证码")
+    @LogAnnotation(module = "登录", operator = "验证验证码接口")
     public Result checkCheckCode(@RequestBody CodeVo codeVo) {
         String msg = captchaService.checkImageCode(codeVo.getNonceStr(),codeVo.getValue());
         if (StringUtils.isNotBlank(msg)) {

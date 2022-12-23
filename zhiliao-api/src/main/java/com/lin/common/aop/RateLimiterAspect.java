@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import cn.hutool.core.util.ArrayUtil;
+import com.lin.dao.pojo.SysUser;
 import com.lin.handler.ServiceException;
 import com.lin.utils.HttpContextUtils;
 import com.lin.utils.IpUtils;
@@ -80,8 +81,13 @@ public class RateLimiterAspect {
         Class<?> targetClass = method.getDeclaringClass();
         stringBuffer.append(targetClass.getName()).append("::").append(method.getName());
 
-        //获取当前用户id
-        Long sysUserId = UserThreadLocal.get().getId();
+        //获取当前用户数据
+        SysUser sysUser = UserThreadLocal.get();
+        Long sysUserId =null;
+        //预防空指针
+        if(sysUser != null){
+            sysUserId = sysUser.getId();
+        }
         if(ArrayUtil.isNotEmpty(sysUserId)){
             //获得 rate_limit:0:0:0:0:0:0:0:1-com.lin.controller.ArticleController-test-userid
             return stringBuffer.append("::").append(sysUserId).toString();

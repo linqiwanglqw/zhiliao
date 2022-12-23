@@ -138,7 +138,11 @@ public class ArticleServiceImpl implements ArticleService {
          * 1. 根据id查询 文章信息
          * 2. 根据bodyId和categoryid 去做关联查询
          */
-        Article article = this.articleMapper.selectById(articleId);
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Article::getId,articleId);
+        //状态为可用
+        queryWrapper.eq(Article::getAvailable,1);
+        Article article = this.articleMapper.selectOne(queryWrapper);
         ArticleVo articleVo = copy(article, true, true, true, true, true);
         //查看完文章了，新增阅读数
         //查看完文章之后，本应该直接返回数据了，这时候做了一个更新操作，更新时加写锁，阻塞其他的读操作，性能就会比较低
@@ -219,7 +223,7 @@ public class ArticleServiceImpl implements ArticleService {
             //当前文章更新了
             ArticleMessage articleMessage = new ArticleMessage();
             articleMessage.setArticleId(article.getId());
-            rocketMQTemplate.convertAndSend("api-update-article", articleMessage);
+            rocketMQTemplate.convertAndSend("api-update-article:SEND_ARTICLE_MSG", articleMessage);
         }
         return Result.success(map);
     }
@@ -230,7 +234,7 @@ public class ArticleServiceImpl implements ArticleService {
         if (b) {
             ArticleMessage articleMessage = new ArticleMessage();
             articleMessage.setArticleId(articleId);
-            rocketMQTemplate.convertAndSend("blog-update-article", articleMessage);
+//            rocketMQTemplate.convertAndSend("api-update-article", articleMessage);
             return Result.success("删除成功");
         } else {
             return Result.fail(30004, "文章删除或文章不存在");
@@ -241,6 +245,7 @@ public class ArticleServiceImpl implements ArticleService {
     public Result searchArticle(String search) {
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.orderByDesc(Article::getViewCounts);
+        queryWrapper.eq(Article::getAvailable,1);
         queryWrapper.select(Article::getId, Article::getTitle);
         queryWrapper.like(Article::getTitle, search);
         List<Article> articles = articleMapper.selectList(queryWrapper);

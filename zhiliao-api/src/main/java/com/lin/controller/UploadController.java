@@ -1,5 +1,6 @@
 package com.lin.controller;
 
+import com.lin.common.aop.LogAnnotation;
 import com.lin.utils.QiniuUtils;
 import com.lin.vo.Result;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +27,7 @@ public class UploadController {
      * @return
      */
     @PostMapping
+    @LogAnnotation(module = "OSS", operator = "上传图片接口")
     public Result upload(@RequestParam("image") MultipartFile file) {
         //原始文件名称 比如 aa.png
         String originalFilename = file.getOriginalFilename();

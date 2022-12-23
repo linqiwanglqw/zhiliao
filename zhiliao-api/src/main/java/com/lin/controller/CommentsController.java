@@ -1,5 +1,6 @@
 package com.lin.controller;
 
+import com.lin.common.aop.LogAnnotation;
 import com.lin.vo.Result;
 import com.lin.service.CommentsService;
 import com.lin.vo.params.CommentParam;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 public class CommentsController {
     @Autowired
     private CommentsService commentsService;
-
-    ///comments/article/{id}
 
     /**
      * 评论
@@ -27,6 +26,7 @@ public class CommentsController {
 
 
     @PostMapping("create/change")
+    @LogAnnotation(module = "评论", operator = "添加评论接口")
     public Result comment(@RequestBody CommentParam commentParam) {
         return commentsService.comment(commentParam);
     }
