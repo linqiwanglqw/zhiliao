@@ -9,6 +9,7 @@ import com.lin.dao.pojo.ArticleBody;
 import com.lin.dao.pojo.ArticleTag;
 import com.lin.dao.pojo.SysUser;
 import com.lin.service.*;
+import com.lin.utils.SensitiveFilter;
 import com.lin.utils.UserThreadLocal;
 import com.lin.vo.*;
 import com.lin.vo.params.ArticleParam;
@@ -152,6 +153,9 @@ public class ArticleServiceImpl implements ArticleService {
         return Result.success(articleVo);
     }
 
+    @Autowired
+    SensitiveFilter sensitiveFilter;
+
     @Override
     public Result publish(ArticleParam articleParam) {
         //此接口 要加入到登录拦截当中
@@ -209,8 +213,8 @@ public class ArticleServiceImpl implements ArticleService {
         //body
         ArticleBody articleBody = new ArticleBody();
         articleBody.setArticleId(article.getId());
-        articleBody.setContent(articleParam.getBody().getContent());
-        articleBody.setContentHtml(articleParam.getBody().getContentHtml());
+        articleBody.setContent(sensitiveFilter.filter(articleParam.getBody().getContent()));
+        articleBody.setContentHtml(sensitiveFilter.filter(articleParam.getBody().getContentHtml()));
         //先生成boby表的id，然后赋给article表的boby_id
         articleBodyMapper.insert(articleBody);
 
