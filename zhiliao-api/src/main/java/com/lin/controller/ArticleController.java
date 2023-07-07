@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 //json数据进行交互
 @RestController
 @RequestMapping("articles")
@@ -26,7 +28,7 @@ public class ArticleController {
     /**
      * 限流接口
      */
-    @RateLimiter(time = 3,count = 1,limitType = LimitType.IP)
+    @RateLimiter(time = 3, count = 1, limitType = LimitType.IP)
     @GetMapping("/test/{id}")
     @LogAnnotation(module = "文章", operator = "test接口")
     public String test(@PathVariable("id") String id) {
@@ -100,9 +102,9 @@ public class ArticleController {
 
     @PostMapping("publish")
     @ApiOperation("新增修改文章接口")
-    @RateLimiter(time = 10,count = 1,limitType = LimitType.IP)
+    @RateLimiter(time = 10, count = 1, limitType = LimitType.IP)
     @LogAnnotation(module = "文章", operator = "新增修改文章接口")
-    public Result publish(@RequestBody ArticleParam articleParam) {
+    public Result publish(@RequestBody ArticleParam articleParam) throws IOException {
         return articleService.publish(articleParam);
     }
 

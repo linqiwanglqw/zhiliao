@@ -5,6 +5,8 @@ import com.lin.vo.params.ArticleParam;
 import com.lin.vo.params.PageParams;
 import com.lin.vo.params.PageSearchParams;
 
+import java.io.IOException;
+
 public interface ArticleService {
     /**
      * 分页查询 文章列表
@@ -59,7 +61,7 @@ public interface ArticleService {
      * @param articleParam
      * @return
      */
-    Result publish(ArticleParam articleParam);
+    Result publish(ArticleParam articleParam) throws IOException;
 
     Result delAticleById(Long articleId);
 

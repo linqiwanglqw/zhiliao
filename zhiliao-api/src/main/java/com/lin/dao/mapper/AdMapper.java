@@ -5,7 +5,6 @@ import com.lin.dao.pojo.Ad;
 import com.lin.dao.pojo.AdType;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
 
 /**
  * adMapper接口

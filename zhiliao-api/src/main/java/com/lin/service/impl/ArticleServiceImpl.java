@@ -4,13 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lin.dao.dos.Archives;
-import com.lin.dao.pojo.Article;
-import com.lin.dao.pojo.ArticleBody;
-import com.lin.dao.pojo.ArticleTag;
-import com.lin.dao.pojo.SysUser;
+import com.lin.dao.mapper.OpenaiAnswersMapper;
+import com.lin.dao.pojo.*;
 import com.lin.service.*;
 import com.lin.utils.SensitiveFilter;
 import com.lin.utils.UserThreadLocal;
+import com.lin.utils.text.StringUtils;
 import com.lin.vo.*;
 import com.lin.vo.params.ArticleParam;
 import com.lin.vo.params.PageParams;
@@ -22,8 +21,12 @@ import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -150,14 +153,27 @@ public class ArticleServiceImpl implements ArticleService {
         // 更新 增加了此次接口的 耗时 如果一旦更新出问题，不能影响 查看文章的操作
         //线程池  可以把更新操作 扔到线程池中去执行，和主线程就不相关了
         threadService.updateArticleViewCount(articleMapper, article);
+
+
+        //查找ai回答
+        LambdaQueryWrapper<OpenaiAnswers> answersWrapper = new LambdaQueryWrapper<>();
+        answersWrapper.eq(OpenaiAnswers::getArticleId,articleId);
+        OpenaiAnswers openaiAnswers = openaiAnswersMapper.selectOne(answersWrapper);
+        if(openaiAnswers!=null){
+            articleVo.setAnswer(openaiAnswers.getAnswer());
+        }
+
         return Result.success(articleVo);
     }
 
+    //敏感词过滤器
     @Autowired
     SensitiveFilter sensitiveFilter;
 
+
+    @Transactional
     @Override
-    public Result publish(ArticleParam articleParam) {
+    public Result publish(ArticleParam articleParam) throws IOException {
         //此接口 要加入到登录拦截当中
         SysUser sysUser = UserThreadLocal.get();
         /**
@@ -229,8 +245,19 @@ public class ArticleServiceImpl implements ArticleService {
             articleMessage.setArticleId(article.getId());
             rocketMQTemplate.convertAndSend("api-update-article:SEND_ARTICLE_MSG", articleMessage);
         }
+
+        //保存ai回答
+        openAIService.generateAnswers(articleParam.getBody().getContent(),article.getId(),isEdit);
+
         return Result.success(map);
     }
+
+    @Autowired
+    OpenAIService openAIService;
+
+    @Resource
+    OpenaiAnswersMapper openaiAnswersMapper;
+
 
     @Override
     public Result delAticleById(Long articleId) {

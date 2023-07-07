@@ -36,4 +36,8 @@ public class ArticleVo {
 
     private CategoryVo category;
 
+    /**
+     * ai 放回值
+     */
+    private String answer;
 }
